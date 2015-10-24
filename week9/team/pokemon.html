@@ -58,11 +58,27 @@ function solution3(data){
 }
 
 function solution4(data){
-    return 'TODO'
+    return _.max(data,"Attack").Name
+    /*(console.log(data)
+    var s = _.groupBy(data,"Attack")
+    var m = _.mapValues(s,function(x){
+      return x["Name"]
+    })
+    console.log("m: ",m)
+    var max = _.max(_.pluck((_.filter(data,"Attack")),"Attack"))
+    var result = _.result(_.find(data, 'Attack', max), 'Name')
+    return result*/
 }
 
 function solution5(data){
-    return 'TODO'
+    console.log(data)
+
+    var S = _.filter(data,function(x){
+      console.log(x["Type"])
+      return x["Type"] == "GRASS"
+    })
+    var result = _.pluck(S,"Name").join(", ")
+    return result
 }
 
 function run(id, solutionFunc, data){

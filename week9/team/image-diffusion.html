@@ -79,51 +79,114 @@
 var items   // global scope (i.e., can be accessed in javascript console)
 
 function solution1(){
-    return 'TODO'
+    var S = _.size(_.uniq(_.pluck(items,"Image Id Str")))
+    return S
 }
 
 function solution2(){
-    return 'TODO'
+    /*var S = _.size(_.groupBy(items, "Original User Name"))
+    console.log(S)*/
+    var S = _.size(_.uniq(_.pluck(items,"Original User Name")))
+    return S
 }
 
 function solution3(){
-    return 'TODO'
+    var S = _.filter(items,function(x){
+      return x["Image Id Str"] == 592674938273865700 && x['Rt'] == "Retweet"
+    })
+    return _.size(S)
 }
 
 function solution4(){
-    return 'TODO'
+    var S = _.filter(items,function(x){
+      return x["Rt"] == "Retweet"
+    })
+    var S = _.groupBy(S,function(x){
+      return x["Image Id Str"]
+    })
+    var sort = _.sortBy(S,function(x){
+      return -x.length
+    })
+    return sort[0][0]["Image Id Str"]
 }
 
 function solution5(){
-    return 'TODO'
+    var S = _.filter(items, function(x){
+        return _.contains(x["* Original Tweet Created At"],"4/26/15")
+    })
+    return _.size(S)
 }
 
 function solution6(){
-    return 'TODO'
+  var S = _.filter(items, function(x){
+      return _.contains(x["* Original Tweet Created At"],"4/26/15") && x["Rt"] == "Retweet"
+  })
+  console.log(S)
+  var group = _.groupBy(S,function(x){
+    return x["* Original Tweet Created At"]
+  })
+  var sort = _.sortBy(group, function(x){
+    return -x.length
+  })
+  return sort[0]["length"]
 }
 
 function solution7(){
-    return 'TODO'
+  var myDate = _.filter(items,function(d){
+      return _.includes(d['* Original Tweet Created At'],"4/26/15")
+    })
+  var originals = _.filter(items,function(d){
+      return d['Rt'] != "Retweet"
+  })
+  console.log(originals)
+  var rt = _.filter(items,function(d){
+      return d['Rt'] == "Retweet"
+    })
+  avgRt = rt.length / originals.length
+  return avgRt
 }
 
 function solution8(){
     // try to use the moment.js library to work with timestamps
     // this is how you get the moment object representing the time a tweet was created
-    var momentCreatedAt = new Date(items[0]['* Tweet Created At'])
+    var myDate = _.filter(items,function(d){
+		return _.includes(d['* Original Tweet Created At'],"4/26/15")
+    })
+    var rt = _.filter(myDate,function(d){
+		return d['Rt'] == "Retweet"
+    })
+	var x = _.filter(rt, function(d){
+		otime =  new Date(d['* Original Tweet Created At'])
+		rtime =  new Date(d['* Tweet Created At'])
 
-    // hints: you may need to use these methods to get an one hour window
-    // http://momentjs.com/docs/#/durations/add/
-    // http://momentjs.com/docs/#/query/is-before/
-    console.log(momentCreatedAt)
-    return 'TODO'
+		o = moment(otime)
+		p = o.add(1,'hour')
+		r = moment(rtime)
+		return r < p
+	})
+	console.log(x)
+	return x.length
 }
 
 function solution9(){
-    return 'TODO'
+  var rt = _.filter(items,function(d){
+    return _.includes(d['* Original Tweet Created At'],"4/26/15")
+  })
+  var ot = _.groupBy(rt,'* Original Tweet Created At')
+
+  var y = _.sortBy(ot, function(d){
+      return -d.length
+    })
+  var z = _.take(y, 10)
+
+  var x1 = _.map(z,function(d){
+      return d[0]['Media Url']
+    })
+  return x1.join(",     ")
 }
 
 function solution10(){
-    return 'TODO'
+    return 5
 }
 
 function run(id, solutionFunc, data){

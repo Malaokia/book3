@@ -48,12 +48,25 @@ var items   // global scope (i.e., can be accessed in javascript console)
 
 function solution1(){
     // TODO: replace the hard coded values in series by actual computation
+    var filter = _.filter(items,function(x){
+      return (x['CrsPBADept'] == "HIST") | (x['CrsPBADept'] == "HONR") | (x['CrsPBADept'] == "HUMN") | (x['CrsPBADept'] == "IAFS") | (x['CrsPBADept'] == "IPHY")
+    })
+    var group = _.groupBy(filter,"CrsPBADept")
+    var map = _.mapValues(group,function(x){
+      return x.length
+    })
+    var data = {
+      labels: _.take(_.keys(map),5) ,
+      series: [_.take(_.values(map),5)]
+    }
+    /*
     var data = {
           labels: ['HIST', 'HONR', 'HUMN', 'IAFS', 'IPHY'],
           series: [
             [121,23,42,56,12]
           ]
     }
+    console.log("2",data)*/
     new Chartist.Bar('#q1 .answer', data);
 }
 
@@ -73,23 +86,86 @@ function solution2(){
     new Chartist.Bar('#q2 .answer', data);
 }
 
-
 function solution3(){
+  var groups = _.groupBy(items, 'CrsPBADept')
+  var counts = _.mapValues(groups, function(g){
+      return g.length
+  })
+
+  var w = _.pairs(counts)
+  var x = _.filter(w, function(d){
+    return d[1] >= 100
+  })
+
+  var data = {
+        labels: _.map(x,function(d){
+          return d[0]
+        }),
+        series: [
+          _.map(x,function(d){
+              return d[1]
+          })
+        ]
+  }
+
+  new Chartist.Bar('#q3 .answer', data);
 }
 
 function solution4(){
+  var groups = _.groupBy(items, 'CrsPBADept')
+  var w = _.pairs(_.mapValues(groups, function(d){
+  return d.length
+  }))
+  var w2 = _.sortBy(w, function(d){
+    return -d[1]
+  })
+  var data_label = _.map(_.take(w2, 10),function(d){
+    return d[0];
+  })
+  var data_series = _.map(_.take(w2, 10),function(d){
+    return d[1];
+  });
+  var data = {
+        labels: data_label,
+        series: [data_series]
+  }
+  new Chartist.Bar('#q4 .answer', data);
+
 }
 
 function solution5(){
     // TODO: replace the hard coded values in series by actual computation
-    var data = {
-          labels: ['1xxx', '2xxx', '3xxx', '4xxx'],
-          series: [
-            [20,30,40,50],  // CSCI
-            [30,30,30,30]   // HIST
-          ]
-    }
-    new Chartist.Bar('#q5 .answer', data);
+  var groups = _.groupBy(items, 'CrsPBADept')
+	hist = _.pairs(_.mapValues(_.groupBy(groups["HIST"],'CrsLvlNum'),function(d){
+		return d.length
+	}));
+	cs = _.pairs(_.mapValues(_.groupBy(groups["CSCI"],"CrsLv1Num"),function(d){
+		return d.length
+	}));
+	histNums = _.sortBy(hist, function(d){
+		return d[0]
+	});
+	csNums = _.sortBy(cs, function(d) {
+		return d[0]
+	});
+
+	x = _.take(_.map(histNums,function(d){
+				return d[0];
+	}),4);
+	y = _.take(_.map(histNums,function(d){
+				return d[1];
+	}),4);
+	z = _.take( _.map(csNums,function(d){
+				return d[1]
+	}),4);
+	var data = {
+    labels: x ,
+    series: [y,z]
+  };
+  console.log("x ",x)
+  console.log("y",y)
+  console.log("z",z)
+  new Chartist.Bar('#q5 .answer', data);
 }
 
 function run(id, solutionFunc, data){
