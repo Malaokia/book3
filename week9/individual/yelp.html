@@ -67,7 +67,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
     <script src="/js/geolib.js"></script>
     <script>
 
@@ -86,36 +86,121 @@ function solution2(){
 
 function solution3(){
     var businessesInGilbert = _.filter(items, {city: 'Gilbert'})
+    var businessname = _.filter(businessesInGilbert, {"name": "McDonald's"})
+    var result = geolib.getDistance({latitude: businessname[0]['latitude'],longitude: businessname[0]['longitude']},{latitude: businessname[1]['latitude'],longitude: businessname[1]['longitude']})
     // TODO: find McDonloads and compute the distance between the first two
-    return 'TODO'
+    return result/1000 + "km"
 }
 
 function solution4(){
-    return 'TODO'
+  var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+  var businessname = _.filter(businessesInPhoenix, {"name": "McDonald's"})
+  var allmc = [{latitude: businessname[0]['latitude'],longitude: businessname[0]['longitude']},
+  {latitude: businessname[1]['latitude'],longitude: businessname[1]['longitude']},
+  {latitude: businessname[2]['latitude'],longitude: businessname[2]['longitude']},
+  {latitude: businessname[3]['latitude'],longitude: businessname[3]['longitude']},
+  {latitude: businessname[4]['latitude'],longitude: businessname[4]['longitude']},
+  {latitude: businessname[5]['latitude'],longitude: businessname[5]['longitude']},
+  {latitude: businessname[6]['latitude'],longitude: businessname[6]['longitude']},
+  {latitude: businessname[7]['latitude'],longitude: businessname[7]['longitude']},
+  {latitude: businessname[8]['latitude'],longitude: businessname[8]['longitude']},
+  {latitude: businessname[9]['latitude'],longitude: businessname[9]['longitude']}
+];
+  var result = geolib.getCenter(allmc)
+  return "center is at" + result["latitude"] + " , " + result["longitude"]
 }
 
 function solution5(){
-    return 'TODO'
+  var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+  var businessmc = _.filter(businessesInPhoenix, {"name": "McDonald's"})
+  var businessstar = _.filter(businessesInPhoenix, {"name": "Starbucks"})
+  if(_.size(businessmc) > _.size(businessstar)){return "McDonald's"}
+  else{return "Starbucks"}
 }
 
 function solution6(){
-    return 'TODO'
+    var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+    var businessstar = _.filter(businessesInPhoenix, {"name": "Starbucks"})
+    var sort = _.sortBy(businessstar,"review_count")
+    return sort[_.size(sort)-1]["name"] + " at " + sort[_.size(sort)-1]["full_address"]
 }
 
 function solution7(){
-    return 'TODO'
+  var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+  var businessname = _.filter(businessesInPhoenix, {"name": "McDonald's"})
+  var businessstar = _.filter(businessesInPhoenix, {"name": "Starbucks"})
+  var sort = _.sortBy(businessstar,"review_count")
+  var allmc = [{latitude: businessname[0]['latitude'],longitude: businessname[0]['longitude']},
+  {latitude: businessname[1]['latitude'],longitude: businessname[1]['longitude']},
+  {latitude: businessname[2]['latitude'],longitude: businessname[2]['longitude']},
+  {latitude: businessname[3]['latitude'],longitude: businessname[3]['longitude']},
+  {latitude: businessname[4]['latitude'],longitude: businessname[4]['longitude']},
+  {latitude: businessname[5]['latitude'],longitude: businessname[5]['longitude']},
+  {latitude: businessname[6]['latitude'],longitude: businessname[6]['longitude']},
+  {latitude: businessname[7]['latitude'],longitude: businessname[7]['longitude']},
+  {latitude: businessname[8]['latitude'],longitude: businessname[8]['longitude']},
+  {latitude: businessname[9]['latitude'],longitude: businessname[9]['longitude']}
+];
+  var near = geolib.findNearest({latitude: sort[_.size(sort)-1]["latitude"],longitude:  sort[_.size(sort)-1]["longitude"]},allmc)
+  return businessname[near["key"]]["full_address"]
 }
 
 function solution8(){
-    return 'TODO'
+  var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+  var businessname = _.filter(businessesInPhoenix, {"name": "McDonald's"})
+  var businessstar = _.filter(businessesInPhoenix, {"name": "Starbucks"})
+  var sort = _.sortBy(businessstar,"review_count")
+  var allmc = [{latitude: businessname[0]['latitude'],longitude: businessname[0]['longitude']},
+  {latitude: businessname[1]['latitude'],longitude: businessname[1]['longitude']},
+  {latitude: businessname[2]['latitude'],longitude: businessname[2]['longitude']},
+  {latitude: businessname[3]['latitude'],longitude: businessname[3]['longitude']},
+  {latitude: businessname[4]['latitude'],longitude: businessname[4]['longitude']},
+  {latitude: businessname[5]['latitude'],longitude: businessname[5]['longitude']},
+  {latitude: businessname[6]['latitude'],longitude: businessname[6]['longitude']},
+  {latitude: businessname[7]['latitude'],longitude: businessname[7]['longitude']},
+  {latitude: businessname[8]['latitude'],longitude: businessname[8]['longitude']},
+  {latitude: businessname[9]['latitude'],longitude: businessname[9]['longitude']}
+];
+  distance = geolib.orderByDistance({latitude: sort[_.size(sort)-1]["latitude"],longitude:  sort[_.size(sort)-1]["longitude"]},allmc)
+
+  var within = _.filter(distance, function(x){
+    return x["distance"] <= 20000
+  })
+  return _.size(within)
 }
 
 function solution9(){
-    return 'TODO'
+  var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+  var businessname = _.filter(businessesInPhoenix, {"name": "McDonald's"})
+  var sort = _.sortBy(businessname,"latitude")
+  return ("Southernmost McDonald's located at " + businessname[0]["full_address"] + "; Northernmost McDonald's located at " + businessname[_.size(sort)-1]["full_address"])
 }
 
 function solution10(){
-    return 'TODO'
+  var mcdonaldsCoordinates = _.map(_.filter(_.filter(items, {'city': 'Phoenix'}), {'name': "McDonald's"}), function(d) {
+      return { 'name': d.name, 'address': d.full_address, 'latitude': d.latitude, 'longitude': d.longitude }
+  })
+  var starbucksCoordinates = _.map(_.filter(_.filter(items, {'city': 'Phoenix'}), {'name': "Starbucks"}), function(d) {
+      return { 'name': d.name, 'address': d.full_address, 'latitude': d.latitude, 'longitude': d.longitude }
+  })
+  var distanceToStarbucks = _.map(mcdonaldsCoordinates, function(d) {
+      var c1 = {latitude: d.latitude, longitude: d.longitude}
+      return _.map(starbucksCoordinates, function(f) {
+          var c0 = {latitude: f.latitude, longitude: f.longitude}
+          var distance = geolib.getDistance(c0,c1)
+          return { 'name': d.name, 'address': d.address, 'distance': distance }
+      })
+  })
+  var minDistances = _.map(distanceToStarbucks, function(d) {
+      var min_distance = _.min(_.pluck(d, 'distance'))
+      var address = _.unique(_.pluck(d, 'address'))
+      return { 'address': address, 'distance': min_distance }
+  })
+  return _.map(_.filter(minDistances, function(d) {
+      return d.distance > 5000
+  }), function(d) {
+      return d.address[0]
+  }).join(", ") + "has no Starbucks in its 5 km radius."
 }
 
 function run(id, solutionFunc, data){
