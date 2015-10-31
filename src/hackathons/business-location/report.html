@@ -168,7 +168,7 @@ function has_no_childcare_within_2_miles(loc){
  var S = _.filter(nearbyBusinesses, function(x){
    return _.contains(x['categories'], 'Child Care & Day Care')
  })
-  return S.length > 0
+  return S.length == 0
 }
 // 7. Are there Adult Entertainment businesses within one mile?
 function has_no_adult_entertainment_within_one_mile(loc){
