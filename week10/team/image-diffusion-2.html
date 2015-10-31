@@ -37,7 +37,7 @@
     <div class="parallax">
       <img src="nepal.jpg">
       <h1 id="title">What are the patterns of image diffusion during the Nepal Earthquake?
-        <div class="authors">by Name1, Name2, Name3, Name4</div>
+        <div class="authors">by Brian McKean, Karen Blakemore, Mingqi Liew, Matt Schroeder</div>
       </h1>
 
     </div>
@@ -58,12 +58,12 @@
           </section>
 
           <section id="q3" class="question collection-item">
-              <h4>question? (contributed by ???)</h4>
+              <h4>Do tweets from influential tweeters live longer? (contributed by Karen Blakemore)</h4>
               <div class="answer"></div>
           </section>
 
           <section id="q4" class="question collection-item">
-              <h4>question? (contributed by ???)</h4>
+              <h4>question? (contributed by Matt Schroeder)</h4>
               <div class="answer"></div>
           </section>
       </div>
@@ -80,13 +80,35 @@
   <div class="section white container flow-text">
     <div class="markdown">
 
-# Discussion
+#Discussion of some findings
+here does not appear to be a rleationship between the number of followers and the number of retweets.
+There appeared to be higher % of tweets being retweeted  loaclly than intarnatioanlly.
+Relationship between the number of followers and the length of time that a tweet is being retweeted doesn't seem to has any relation.
+The number of followers and the length of time that a tweet is being retweeted also seem to be unrelated.
+# Findings, Recommendations and Future Work
 
-Discuss some findings
+## Follower Counts Influence on Diffusion
+The findings related to follower counts were inconclusive, due to the small number of valid originating tweets which were retweeted.  There were 80 of
+these in the data set.  We have the following recommendations for increasing the number of originating tweets which are retweeted:
+1. Repair the invalid tweets listed below.
+2. Add missing orginator tweets.  Can this be done by searching twitter using the Image Id?
+3. Add retweets.  Can this be done by searching twitter using the Image Id?
 
-# Heading 2
+## Invalid Original Tweets
+Twenty of the original tweets are incorrect.  The image is either listed as origniating
+from multiple tweets, or the originating tweet date is greater than the retweet date.
+The following images have invalid originating tweets:
 
-Discuss some findings
+592149979889819600, 592152575081893900,
+592139111860940800, 592285978557075500, 592613449072386000, 592108721112649700, 592531951036293100,
+592228035023114200, 592841349373816800, 592530513098707000, 592278192796241900, 592384635738333200,
+592672314648559600, 592235421192593400, 592576416144818200, 592573636696899600, 592228580630868000,
+592268981471424500, 592762668018225200, 592778296284323800
+
+## Future Follower Count Work
+1. Analyze the influence of retweeter's follower count on the diffusion of tweets.
+2. Consider a shorter time span for study, as the benefit of disaster news dissipates after a few days.
+3. analyze the nature of tweets from the international senders and is international help with relief efforts, offering prayers, or other areas?
 
     </div>
   </div>
@@ -174,20 +196,79 @@ function solution2(){
   return "international retweet percentage is:"+int_percent+"%\n Local retweet percentage is: "+local_percent+"%\n proportion of local over international retweet is "+proportion + "%\n"
 }
 
-
 function solution3(){
-    return 'TODO'
+    // define a template string
+    var tplString = '<g> \
+    				<circle cx="${d.x}" \
+    				cy="${d.y}" \
+    				r="4" \
+    				stroke="black" \
+    				fill="red" /> \
+                    </g>'
+
+    // compile the string to get a template function
+    var template = _.template(tplString)
+
+    var groups = _.groupBy(items, 'Image Id Str')
+
+    console.log('groups', groups)
+
+    // Find original tweets
+    var images = _.mapValues(groups, function(tweets) {
+        var originalTweet = _.find(tweets, {'* Original Tweet Created At': ''})
+
+        var followers = null
+        var lifespan = -1
+        if (originalTweet) {
+            // Followers count of orignal tweet
+            var followers = originalTweet['User Followers Count']
+
+            // lifespan of tweet
+            var birth = Date.parse(originalTweet['* Tweet Created At'])
+            var death = _.max(tweets, function(tweet) {
+                 return Date.parse(tweet['* Tweet Created At'])
+            })
+
+            lifespan = Date.parse(death['* Tweet Created At']) - birth
+        }
+        return [lifespan, followers]
+    })
+
+    // Extract entries with original tweet in data set
+    var filteredImages = _.filter(_.values(images), function(image) {
+        return image[0] != -1
+    })
+
+    var unzippedFilteredImages = _.unzip(filteredImages)
+    var maxLifespan = _.max(unzippedFilteredImages[0])
+    var maxFollowers = _.max(unzippedFilteredImages[1])
+
+    // X coordinate is the scaled time
+    function computeX(d, i) {
+        return 600 * d[0]/maxLifespan + 10
+    }
+
+    // Y coordinate is the scaled follower count
+    function computeY(d, i) {
+        return 200 * 10 * d[1]/maxFollowers + 10
+    }
+
+    var viz = _.map(filteredImages, function(d, i){
+                return {
+                    x: computeX(d, i),
+                    y: computeY(d, i)
+                }
+             })
+
+    var result = _.map(viz, function(d){
+             // invoke the compiled template function on each viz data
+             return template({d: d})
+         })
+
+    return '<svg width="100%" height="100%">' + result + '</svg>'
 }
 
 function solution4(){
-    return 'TODO'
-}
-
-function solution5(){
-    return 'TODO'
-}
-
-function solution6(){
     return 'TODO'
 }
 
