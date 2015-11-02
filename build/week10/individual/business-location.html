@@ -12,7 +12,7 @@
 
 <div class="container">
 
-    <h1>Where should we build X?</h1>
+    <h1>Where should we build Sushi Buffet?</h1>
 
     <section id="candidates" class="question">
         <h4>Where are the candidate locations?</h4>
@@ -38,12 +38,16 @@
 
 function getCandidateLocations(){
   var locations = []
-  locations.push({latitude: 33.45, longitude: -112.03})
-  locations.push({latitude: 33.45, longitude: -112.04})
-  locations.push({latitude: 33.45, longitude: -112.05})
-  locations.push({latitude: 33.45, longitude: -112.06})
-  locations.push({latitude: 33.45, longitude: -112.07})
-  locations.push({latitude: 33.45, longitude: -112.08})
+  var origin = [33.44,-112.10]
+  var x = 4
+  var y = 10
+  var latitude = _.range(origin[0], origin[0] + .01 * (x-1), .01)
+  var longitude = _.range(origin[1], origin[1] + .01 * (y-1), .01)
+  latitude.forEach(function(lat) {
+    longitude.forEach(function(long) {
+      locations.push({latitude: _.round(lat, 2), longitude: _.round(long, 2)})
+    })
+  })
   return locations
 }
 
@@ -51,40 +55,88 @@ function getCandidateLocations(){
 //
 // Scoring Functions
 //
+function nearby(location, distance){
+  var S = _.filter(items, function(item){
+    var loc2  = _.pick(item, ['latitude', 'longitude'])
+    var d = geolib.getDistance(location, loc2)
+    return geolib.convertUnit('mi', d) <  distance
+  })
 
-function has_some_feature_1(loc){
-  // TODO
-  return true
+  return S
 }
 
-function has_some_feature_2(loc){
-  // TODO
-  return false
+//
+// Returns a list of nearby businesses for each location.
+//
+function getnearby(locations, dist) {
+  var S =  _.map(locations, function(l) {
+    return nearby(l, dist)
+  })
+
+  return S
 }
 
-function has_some_feature_3(loc){
-  // TODO
-  return true
+
+function has_no_cheap_competitors_within_a_quater_mile(locs,distance){
+  var att = _.filter(distance, function(x){
+    return x.length != 0
+  })
+
+  var low = _.filter(att, function(x){
+
+    return x['attributes']['Price Range'] < 3 && _.includes(x['categories'],"Restaurants") || _.includes(x['categories'],"Fast Food")
+  })
+  return low.length == 0
+//  return true
 }
 
-function has_some_feature_4(loc){
-  // TODO
-  return false
+function has_no_highend_competitors_within_1_mile(locs,distance){
+  // "Ambience": {"romantic": true, "intimate": false, "touristy": false, "hipster": false, "divey": false, "classy": false, "trendy": false, "upscale": false, "casual": false
+
+  //|| x['attributes']['Ambience']['trendy'] || x['attributes']['Ambience']['upscale'] || x['attributes']['Ambience']['classy'] )&& _.includes(x['categories'],"Restaurants")
+  //console.log("att: ",att)
+  var high = _.filter(distance, function(x){
+    if(x['attributes']["Ambience"] != undefined)
+      return x['attributes']['Ambience']['classy'] == true && _.includes(x['categories'],"Restaurants")
+    else false
+  })
+
+  return high.length == 0
 }
 
-function has_some_feature_5(loc){
-  // TODO
-  return false
+function has_auto_repair_within_1_mile(locs,distance){
+  var repair = _.filter(distance, function(x){
+    return _.includes(x['categories'],'Auto Repair')
+  })
+  return repair.length > 0
+}
+
+function has_animals_and_gay_bars_within_1_miles(locs,distance){
+  var no_pet = _.filter(distance, function(x){
+    return _.intersection(x['categories'],['Pets','Gay Bars']) != null
+  })
+  return no_pet.length == 0
+}
+
+function has_court_houses_within_1_mile(locs,distance){
+  var court = _.filter(distance, function(x){
+    //return _.intersection(x['categories'],['Courthouses','Police Departments'])
+    return _.includes(x['categories'],'Courthouses')
+  })
+  console.log("court: ",court)
+  return court.length > 0
 }
 
 //
 // Compute a score for a location using the provided scoring function 'scoreFunc'
 // and visualization function 'vizFunc'
 //
-function scoreAndVisualize(locs, scoreFunc, vizFunc){
+function scoreAndVisualize(locs, businesses, scoreFunc, vizFunc){
 
   console.time('scoring ' + scoreFunc.name)
-  var scores = _.map(locs, scoreFunc)
+  var scores = _.map(locs, function(loc, i) {
+    return scoreFunc(loc, businesses[i])
+  })
   console.timeEnd('scoring ' + scoreFunc.name)
 
   var title = _.startCase(scoreFunc.name)
@@ -175,12 +227,14 @@ function loadDataThenRunSolutions(){
 
       console.log('scoring all candidate locations')
 
-      scoreAndVisualize(locs, has_some_feature_1, visualize_true_or_false)
-      scoreAndVisualize(locs, has_some_feature_2, visualize_true_or_false)
-      scoreAndVisualize(locs, has_some_feature_3, visualize_true_or_false)
-      scoreAndVisualize(locs, has_some_feature_4, visualize_true_or_false)
-      scoreAndVisualize(locs, has_some_feature_5, visualize_true_or_false)
-
+      var near = getnearby(locs, 0.25)
+      scoreAndVisualize(locs,near, has_no_cheap_competitors_within_a_quater_mile, visualize_true_or_false)
+      scoreAndVisualize(locs,near,  has_animals_and_gay_bars_within_1_miles, visualize_true_or_false)
+      var near = getnearby(locs, 1)
+      console.log("near: ",near)
+      scoreAndVisualize(locs,near, has_no_highend_competitors_within_1_mile, visualize_true_or_false)
+      scoreAndVisualize(locs,near,  has_auto_repair_within_1_mile, visualize_true_or_false)
+      scoreAndVisualize(locs,near, has_court_houses_within_1_mile, visualize_true_or_false)
    })
    .fail(function(err){
        console.error(err)
