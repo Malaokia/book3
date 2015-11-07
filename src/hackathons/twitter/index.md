@@ -94,12 +94,11 @@ correctly, and also what other teams are up to in real-time.
 
 The team members who contributed to this hackathon are:
 
-- (Name)
-- (Name)
-- (Name)
-- (Name)
-- (Name)
-- (Name)
+- Mingqi Liew
+- Matt Schroeder
+- Brian McKean
+- Karen Blakemore
+
 
 ## Grading
 
@@ -109,16 +108,18 @@ Each person must implement at least ONE detector function. It must be meaningful
 
 Our team came up with the following interesting events:
 
-1. Has observed .... ? contributed by (Name)
 
-  (one sentence justification why this event is interesting)
+3.Has "US" and "Crash" tweets observed? contributed by Mingqi Liew
+1. Has observed languages other than English and Russian? contributed by Karen
 
-1. Has observed .... ? contributed by (Name)
+    The predominant language used in tweets is English and we are collecting tweets with the term Russia, so I would think that languages other than English and Russian would be very rare.
 
-  (one sentence justification why this event is interesting)
+1. Has observed the word Putin? contributed by Brian
 
-1. Has observed .... ? contributed by (Name)
+  There's alot of mentioning of Putin
 
-  (one sentence justification why this event is interesting)
+1. Has "US" and "Crash" tweets observed? contributed by Mingqi Liew
+
+  There's not alot of mentioning tweets that has mentioned "US" and "crash" which indicated American or not a lot of people relate US and the crash
 
 (add more until you hit N where N is the number of people on your team)
