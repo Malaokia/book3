@@ -64,25 +64,19 @@ var CLASS_FORKS = 'https://big-data-hci-hackathon.firebaseio.com/book3/forks'
 new Firebase(CLASS_FORKS)
   .once('value', function(snapshot){
     var forks  = snapshot.val()
-
     _.forEach(forks, function(fork){
       var individual_github_name = fork.owner.login
       var individual_firebase_url = 'https://' + individual_github_name + '-bigdata-hci.firebaseio.com'
       console.log('firebase url', individual_firebase_url)
-
       new Firebase(individual_firebase_url)
         .child('events')
         .once('value', function(snapshot){
           var events = snapshot.val()
-
           handle_individual_events(individual_github_name, events)
-
         }, function(err){
           console.error(err)
         })
-
     })
-
 })
 
 // array to collect event data from all individuals
@@ -121,16 +115,16 @@ function analyze(events){
 
   ask(how_many_individuals_analyzed_so_far, events)
   ask(whose_data_is_available, events)
-  ask(question1, events)
-  ask(question2, events)
-  ask(question3, events)
-  ask(question4, events)
-  ask(question5, events)
-  ask(question6, events)
-  ask(question7, events)
-  ask(question8, events)
-  ask(question9, events)
-  ask(question10, events)
+  ask(different_type_of_feed_being_used, events)
+  ask(who_use_youtube, events)
+  ask(which_users_has_max_variety_feeds, events)
+  ask(which_users_has_least_variety_feeds, events)
+  ask(who_uses_gmail_compare_to_youtube, events)
+  ask(who_only_use_gmail_as_their_solely_feed, events)
+  ask(which_users_use_greater_than_3_feeds, events)
+  ask(which_users_use_less_than_or_equal_3_feeds, events)
+  ask(what_is_avg_events_count_for_all, events)
+  ask(what_is_total_events_count_for_all, events)
 }
 
 function how_many_individuals_analyzed_so_far(events){
@@ -140,45 +134,131 @@ function how_many_individuals_analyzed_so_far(events){
 function whose_data_is_available(events){
   return _.keys(events).join(' , ')
 }
-
-function question1(events){
-  return '...'
+/*var nameArr = _.words(entry.name);
+var firstName = _.first(nameArr);
+var lastName = _.rest(nameArr).join(' ');
+return {"name":lastName+', '+firstName}
+})*/
+function different_type_of_feed_being_used(events){
+  console.log('events: ', events)
+  var S = _.filter(_.unique(_.flatten(_.map(_.values(events), function(d) {
+    return  _.keys(d)
+  }))), function(d) {
+    return !(_.contains(d, '-K2'))
+  }).join(' , ')
+  return S
 }
 
-function question2(events){
-  return '...'
+function who_use_youtube(events){
+  var S = _.filter(_.map(events,function(k,x){
+    if(_.contains(_.keys(k),'youtube')){return x}
+  }),function(x){
+    return !(x == undefined)
+  }).join(',')
+  return S
+}
+function which_users_has_max_variety_feeds(events){
+  var size = _.mapValues(events, function(x) {
+    return _.size(x)
+  })
+  var S = _.filter(_.map(size,function(x,k){
+    if(x == _.min(size)){return k}
+  }),function(n){
+    return !(n == undefined)
+  })
+
+  return S
 }
 
-function question3(events){
-  return '...'
+function which_users_has_least_variety_feeds(events){
+  var size = _.mapValues(events, function(x) {
+    return _.size(x)
+  })
+  var S = _.filter(_.map(size,function(x,k){
+    if(x == _.max(size)){return k}
+  }),function(n){
+    return !(n == undefined)
+  })
+
+  return S
 }
 
-function question4(events){
-  return '...'
+
+function who_uses_gmail_compare_to_youtube(events){
+  var Sy = _.filter(_.map(events,function(k,x){
+    if(_.contains(_.keys(k),'youtube')){return x}
+  }),function(x){
+    return !(x == undefined)
+  }).join(' , ')
+  var Sg = _.filter(_.map(events,function(k,x){
+    if(_.contains(_.keys(k),'gmail')){return x}
+  }),function(x){
+    return !(x == undefined)
+  }).join(' , ')
+  return "gmail users are: "+Sg+" while youtube users are: "+Sy
 }
 
-function question5(events){
-  return '...'
+function who_only_use_gmail_as_their_solely_feed(events){
+  var Sg = _.filter(_.map(events,function(k,x){
+    if(_.keys(k) == 'gmail'){return x}
+  }),function(x){
+    return !(x == undefined)
+  }).join(' , ')
+  return Sg
 }
 
-function question6(events){
-  return '...'
+function which_users_use_greater_than_3_feeds(events){
+  var size = _.mapValues(events, function(x) {
+    return _.size(x)
+  })
+  var S = _.filter(_.map(size,function(x,k){
+    if(x > 3){return k}
+  }),function(n){
+    return !(n == undefined)
+  })
+  return S.join(' , ')
 }
 
-function question7(events){
-  return '...'
+function which_users_use_less_than_or_equal_3_feeds(events){
+  var size = _.mapValues(events, function(x) {
+    return _.size(x)
+  })
+  var S = _.filter(_.map(size,function(x,k){
+    if(x <= 3){return k}
+  }),function(n){
+    return !(n == undefined)
+  })
+  return S.join(' , ')
 }
 
-function question8(events){
-  return '...'
+function what_is_avg_events_count_for_all(events){
+  var filter = _.filter( _.values(events), function(x) {
+    return _.isObject(x)
+  })
+  var e_ct = 0
+  var total_usr = 0
+  _.map(filter, function(x) {
+    _.map(x, function(n) {
+      var ct = _.size(n)
+      total_usr = total_usr + 1
+      e_ct = e_ct+ct
+    })
+  })
+  return e_ct/total_usr
 }
 
-function question9(events){
-  return '...'
-}
-
-function question10(events){
-  return '...'
+function what_is_total_events_count_for_all(events){
+  var filter = _.filter( _.values(events), function(x) {
+    return _.isObject(x)
+  })
+  var e_ct = 0
+  _.map(filter, function(x) {
+    _.map(x, function(n) {
+      var ct = _.size(n)
+      e_ct = e_ct+ct
+    })
+  })
+  return e_ct
 }
 
 
