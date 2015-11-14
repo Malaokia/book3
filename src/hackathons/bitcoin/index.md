@@ -65,9 +65,7 @@ bot is able to make the most profits on live data.
 
 The team members who contributed to this hackathon are:
 
-- (Name)
-- (Name)
-- (Name)
-- (Name)
-- (Name)
+- (Mingqi Liew)
+- (Karen Blakemore)
+- (Brian McKean)
 - (Name)
