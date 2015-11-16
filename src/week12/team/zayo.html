@@ -101,12 +101,12 @@ function csv2jsonAccount(rawdata){
 
 var items
 //REPLACE WITH ZAYO CSV FILE
-$.ajax({url: 'http://localhost:8081/data/CUProject-CustomerAccount.csv'})
+$.ajax({url: 'http://malaokia.github.io/book3/data/CUProject-CustomerAccount.csv'})
  .done(function(rawdata){
   account_item = csv2jsonAccount(rawdata)
   console.log('number of account loaded:', account_item.length)
   console.log('Account:', account_item[0])
-  $.ajax({url: 'http://localhost:8081/data/CUProject-CustomerProfile.csv'})
+  $.ajax({url: 'http://malaokia.github.io/book3/data/CUProject-CustomerProfile.csv'})
    .done(function(rawdata){
     profile_item = csv2jsonProfile(rawdata)
     console.log('number of profile loaded:', profile_item.length)
@@ -138,6 +138,9 @@ function analyze(){
   toggleSourecode()
 }
 function func1(){
+  var productA = _.filter(profile_item,function(x){
+    console.log(x)
+  })
   var products=_.groupBy(profile_item, function(g){
     return g.Industry
   })
@@ -152,8 +155,6 @@ function func1(){
     })
    return sum
   })
-  console.log(s)
-  console.log(key)
   var result = ''
   var ctr = 0
   _.forEach(key,function(x){
