@@ -1,0 +1,347 @@
+<html>
+<head>
+    <style>
+        .answer {
+            min-height: 50px
+        }
+        section{
+          padding: 10px;
+          margin-bottom: 12px
+        }
+        .parallax-container {
+          height: 300
+        }
+        #title {
+          position: absolute;
+          padding: 20px;
+          font-size: 64px;
+          font-weight: bolder;
+          color: white;
+          top: 100px;
+          left: 0px;
+          text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black
+        }
+        #title .authors {
+          padding: 20px;
+          font-size: 32px;
+          font-weight: bolder;
+          color: #BBB;
+          text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
+</head>
+<body>
+
+  <div class="parallax-container">
+    <div class="parallax">
+      <img src="nepal.jpg">
+      <h1 id="title">What are the patterns of image diffusion during the Nepal Earthquake?
+        <div class="authors">by Brian McKean, Karen Blakemore, Mingqi Liew, Matt Schroeder</div>
+      </h1>
+
+    </div>
+  </div>
+
+  <div class="section white container flow-text">
+
+      <div id="questions" class="collection with-header">
+          <div class="collection-header">Questions</div>
+          <section id="q1" class="question collection-item">
+              <h4>What is the relationship between number of followers and number of retweets? (contributed by Brian McKean)</h4>
+              <div class="answer"></div>
+          </section>
+
+          <section id="q2" class="question collection-item">
+              <h4>What is the local and international percentage of retweet and what is the proportion of that? (contributed by Mingqi Liew)</h4>
+              <div class="answer"></div>
+          </section>
+
+          <section id="q3" class="question collection-item">
+              <h4><h4>Do tweets from influential tweeters live longer? (contributed by Karen Blakemore)</h4>
+              <h5>The chart below shows how the lifespan of an image varies based on the number of
+                  followers of the original tweeter, with an origin at the upper left corner.</h5>
+
+              <h5>For all images where the originating
+                  tweet is also in the data set, you can see a point on the graph.  There are 186 points on the graph.</h5>
+
+              <h5>The x-axis is the tweet lifespan and ranges from
+                  0 to 127,816,000 seconds which is 148 days.  Where there is more than one tweet originating an image, the
+                  lifespan is measured from the oldest tweet.  105 of the datapoints have an x-coordinate of zero,
+                  indicating that the corresponding image was not retweeted.</h5>
+
+              <h5>The y-axis is the sum of all the followers
+                  of the original tweeters.  It ranges from 1 to 74,383.</h5>
+              <div class="answer"></div>
+          </section>
+
+          <section id="q4" class="question collection-item">
+              <h4>question? (contributed by Matt Schroeder)</h4>
+              <div class="answer"></div>
+          </section>
+      </div>
+
+  </div>
+
+  <div class="parallax-container" style="height:200px">
+    <div class="parallax">
+      <img src="nepal2.jpg">
+    </div>
+  </div>
+
+
+  <div class="section white container flow-text">
+    <div class="markdown">
+
+#Discussion of some findings
+## Local vs. International Reweets
+The percentage of local tweets which are retweets is 86.5%, whereas the international percentage is
+97.7%.  This indicates that tweets sent from Nepal are more likely to be original tweets than tweets sent from
+outside of Nepal.
+
+## Association between Follower Count and Diffusion
+The analysis shows a relationship between the orginator follower count and the number of
+retweets.  The association with image lifespan is less conclusive.
+
+We wonder how representative the data set is
+of the image tweet stream.  A large proportion of the images (243/429) did not have the originating tweet
+in the data set.  Of those images which did have the originating tweet in the data set, a large proportion (105/186) were
+not retweeted.
+
+It is our understanding that
+the tweets were collected based on keywords and hashtags.  If the originating tweet was sent before the collection started,
+it would not be included in the data set.  Because of
+this, we recommend attempting to gathering additional tweets of the images from the Twitter database, using the image id,
+if this is possible.
+
+As follow-up work, we suggest a similar analysis of the retweeters' follower count and its influence on image diffusion.
+
+We also recommend viewing a sample of images from the data set to determine if there is commonality between those that were
+retweeted and those which were not.
+
+    </div>
+  </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
+    <script>
+
+var items   // global scope (i.e., can be accessed in javascript console)
+function solution1(){
+  // Find relationship between number of followers and number of retweet
+
+  // Get original tweets
+  var ot = _.filter(items,function(d){
+      return d['Rt'] != "Retweet"
+  })
+  // Map count of followers
+  var otfollow = _.sortBy(ot, function(d){
+      return -d['User Followers Count']
+  })
+  num = 30
+  var z1 = _.take(otfollow, num)
+  // Get retweets
+  var rt = _.filter(items,function(d){
+      return d['Rt'] == "Retweet"
+  })
+  // Dataset is not complete so filter retweet counts to only those with
+  // orinal tweets in the dataset
+  var rto = _.filter(rt, function(d){
+x = _.find(ot, function(e){
+          y = d['* Original Tweet Created At'] == e['* Tweet Created At']
+    return y
+})
+return x
+  })
+  console.log(rt.length)
+  console.log(rto.length)
+  var otrt = _.groupBy(rto,'* Original Tweet Created At')
+  console.log(otrt)
+  var y3 = _.sortBy(otrt, function(d){
+      return -d.length
+  })
+  var z2 = _.take(y3,num)
+  bothLists = _.filter(z1, function(d){
+      match = _.find(z2, function(e){
+          return e[0]['* Original Tweet Created At'] == d['* Tweet Created At']
+      })
+      return match
+  })
+  console.log(bothLists)
+
+  answer = 'We found a correlation between follower count and the number of retweets.  There are '+bothLists.length+' tweets on the top '+num+' lists for both number of followers and number of retweets'
+  return answer
+}
+function solution2(){
+
+  var separators = [' ', '\\\+', '-', '\\\(', '\\\)', '\\*', '/', ':', '\\\?','_',',',';','____',"&",'/ ',': ',"#","!"];
+  //var list = []
+  var upperCase = _.memoize(function(string) {
+    return string.toLowerCase();
+  });
+  var local = _.filter(items, function(x){
+    var tokens = x['User Location'].split(new RegExp(separators.join('|'), 'g'));
+
+    var list = []
+    _.forEach(tokens,function(f){
+      list = list.concat(upperCase(f))
+    })
+    console.log("list:",list)
+    return !(_.contains(list,"singapore"))&&!(_.contains(list,"russia"))&&!(_.contains(list,"usa"))&&!(_.contains(list,"japan"))&&!(_.contains(list,"australia"))
+    &&!(_.contains(list,"london"))&&!(_.contains(list,"kuala"))&&!(_.contains(list,"india"))&&!(_.contains(list,"zealand"))&&!(_.contains(list,"adelaide"))
+    &&!(_.contains(list,"ireland"))&&!(_.contains(list,"sudan"))&&!(_.contains(list,"canada"))&&!(_.contains(list,"malaysia"))
+  })
+  var international = _.filter(items,function(x){
+    var tokens = x['User Location'].split(new RegExp(separators.join('|'), 'g'));
+
+    var list = []
+    _.forEach(tokens,function(f){
+      list = list.concat(upperCase(f))
+    })
+    return (_.contains(list,"singapore"))||(_.contains(list,"russia"))||(_.contains(list,"usa"))||(_.contains(list,"japan"))||(_.contains(list,"australia"))
+    ||(_.contains(list,"london"))||(_.contains(list,"kuala"))||(_.contains(list,"india"))||(_.contains(list,"zealand"))||(_.contains(list,"adelaide"))
+    ||(_.contains(list,"ireland"))||(_.contains(list,"sudan"))||(_.contains(list,"canada"))||(_.contains(list,"malaysia"))
+  })
+  var int_rt = _.filter(international,function(x){
+    return _.contains(x['Rt'],"Retweet")
+  })
+  var local_rt = _.filter(local,function(x){
+    return _.contains(x['Rt'],"Retweet")
+  })
+  var int_percent = int_rt.length / international.length*100
+  var local_percent = local_rt.length /local.length*100
+  var proportion = local_percent/int_percent*100
+  return "international retweet percentage is:"+int_percent+"%\n Local retweet percentage is: "+local_percent+"%\n proportion of local over international retweet is "+proportion + "%\n"
+}
+
+function solution3(){
+  // define a template string
+  var tplString = '<g> \
+          <circle cx="${d.x}" \
+          cy="${d.y}" \
+          r="4" \
+          stroke="black" \
+          fill="red" /> \
+                  </g>'
+
+  // compile the string to get a template function
+  var template = _.template(tplString)
+
+  // Group tweets by the image id
+  var groups = _.groupBy(items, 'Image Id Str')
+
+  console.log('groups', groups)
+
+  // Find original tweets
+  var images = _.mapValues(groups, function(tweets) {
+      // A single image could originate from multiple tweets.
+      originalTweets = _.filter(tweets, {'* Original Tweet Created At': ''})
+
+      if (originalTweets) {
+          // Followers count is the sum of follower counts for all orignal tweets
+          followers = _.sum(_.pluck(originalTweets, 'User Followers Count'))
+
+          // lifespan of tweet = death (maximum retweet date)
+          // - birth (minimum creation date).
+          birth = _.min(originalTweets, function(tweet) {
+              return Date.parse(tweet['* Tweet Created At'])
+          })
+          death = _.max(tweets, function(tweet) {
+               return Date.parse(tweet['* Tweet Created At'])
+          })
+
+          lifespan = Date.parse(death['* Tweet Created At'])
+              - Date.parse(birth['* Tweet Created At'])
+          return [lifespan, followers]
+      } else return [-1, 0]
+  })
+
+  // Extract entries with original tweet in data set
+  var filteredImages = _.filter(_.values(images), function(image) {
+      return image[0] >= 0
+  })
+
+  var noLife = _.filter(_.values(images), function(image) {
+      return image[0] == 0
+  }).length
+
+  var unzippedFilteredImages = _.unzip(filteredImages)
+  var maxLifespan = _.max(unzippedFilteredImages[0])
+  var maxFollowers = _.max(unzippedFilteredImages[1])
+
+  // X coordinate is the scaled time
+  function computeX(d, i) {
+      return 600 * d[0]/maxLifespan + 10
+  }
+
+  // Y coordinate is the scaled follower count
+  function computeY(d, i) {
+      return 200 * 10 * d[1]/maxFollowers + 10
+  }
+
+  var viz = _.map(filteredImages, function(d, i){
+              return {
+                  x: computeX(d, i),
+                  y: computeY(d, i)
+              }
+           })
+
+  var result = _.map(viz, function(d){
+           // invoke the compiled template function on each viz data
+           return template({d: d})
+       })
+
+  return '<svg width="100%" height="100%">' + result + '</svg>'
+}
+
+function solution4(){
+    return 'TODO'
+}
+
+function run(id, solutionFunc, data){
+    console.log('run solution for ' + id)
+    var answer = solutionFunc(data)
+    $(id).find('.answer').html(answer)
+}
+
+function loadDataThenRunSolutions(){
+  $.get('http://bigdatahci2015.github.io/data/twitter/nepal_local_tweets.json')
+    .done(function(data){
+
+        items = data
+        console.log('number of items loaded:', items.length)
+        console.log('first item', items[0])
+
+       run('#q1', solution1, items)
+       run('#q2', solution2, items)
+       run('#q3', solution3, items)
+       run('#q4', solution4, items)
+       run('#q5', solution5, items)
+       run('#q6', solution6, items)
+     })
+     .fail(function(err){
+         console.error(err)
+     })
+}
+
+loadDataThenRunSolutions()
+
+// convert Markdown to html
+$('.markdown').each(function(){
+  var markdownText = $(this).text()
+  $(this).html(marked(markdownText))
+})
+
+// initialize the parallax effect
+$(document).ready(function(){
+  console.log($('.parallax').html())
+    $('.parallax').parallax()
+})
+
+    </script>
+
+</body>
+</html>

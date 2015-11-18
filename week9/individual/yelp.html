@@ -1,0 +1,253 @@
+<html>
+<head>
+    <style>
+        .answer {
+            min-height: 50px
+        }
+    </style>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Yelp</h1>
+
+    <section id="q1" class="question">
+        <h4>How many businesses are in the city of Pittsburgh?</h4>
+        <div class="answer"></div>
+    </section>
+
+    <section id="q2" class="question">
+        <h4>What is the distance (km) between Denver and Boulder?</h4>
+        <div class="answer"></div>
+    </section>
+
+    <section id="q3" class="question">
+        <h4>What is the distance (km) between the two McDonald's in the city of Gilbert?</h4>
+        <div class="answer"></div>
+    </section>
+
+    <section id="q4" class="question">
+        <h4>What is the geographical center of all the McDonald's in the city of Phoenix?</h4>
+        <div class="answer"></div>
+    </section>
+
+    <section id="q5" class="question">
+        <h4>In Phoenix, are there more McDonald's or Starbucks?</h4>
+        <div class="answer"></div>
+    </section>
+
+    <section id="q6" class="question">
+        <h4>In Phoenix, which Starbucks has the most number of reviews?</h4>
+        <div class="answer"></div>
+    </section>
+
+    <section id="q7" class="question">
+        <h4>In Phoenix, which McDonald's is closest to this most-reviewed Starbucks?</h4>
+        <div class="answer"></div>
+    </section>
+
+    <section id="q8" class="question">
+        <h4>In Phoenix, how many coffee shops are within 2km of this most-reviewed Starbucks?</h4>
+        <div class="answer"></div>
+    </section>
+
+    <section id="q9" class="question">
+        <h4>In Phoenix, which McDonald's is the furthest north, and which is the furthest south?</h4>
+        <div class="answer"></div>
+    </section>
+
+    <section id="q10" class="question">
+        <h4>In Phoenix, which McDonald's has no Starbucks located within 5 kms?</h4>
+        <div class="answer"></div>
+    </section>
+</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
+    <script src="/js/geolib.js"></script>
+    <script>
+
+var items   // global scope (i.e., can be accessed in javascript console)
+
+function solution1(){
+    return _.filter(items,{'city':'Pittsburgh'}).length
+}
+
+function solution2(){
+    // TODO: use the Internet to lookup the GPS coordinates
+    var c0 = {latitude: 39.823, longitude: 105.43}   // Denver
+    var c1 = {latitude: 38.234, longitude: 102.33}   // Boulder
+    return geolib.getDistance(c0,c1)/1000 + ' km'
+}
+
+function solution3(){
+  var alp = ['a','b','c','d'];
+  var alpha = 3;
+  var n = alp.concat(alpha);
+  console.log(alp);
+  console.log(alpha);
+  console.log(n);
+   n = n.toString();
+  console.log(n);
+  /*
+    var businessesInGilbert = _.filter(items, {city: 'Gilbert'})
+    var businessname = _.filter(businessesInGilbert, {"name": "McDonald's"})
+    var result = geolib.getDistance({latitude: businessname[0]['latitude'],longitude: businessname[0]['longitude']},{latitude: businessname[1]['latitude'],longitude: businessname[1]['longitude']})
+    // TODO: find McDonloads and compute the distance between the first two
+    return result/1000 + "km"*/
+}
+
+function solution4(){
+  var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+  var businessname = _.filter(businessesInPhoenix, {"name": "McDonald's"})
+  var allmc = [{latitude: businessname[0]['latitude'],longitude: businessname[0]['longitude']},
+  {latitude: businessname[1]['latitude'],longitude: businessname[1]['longitude']},
+  {latitude: businessname[2]['latitude'],longitude: businessname[2]['longitude']},
+  {latitude: businessname[3]['latitude'],longitude: businessname[3]['longitude']},
+  {latitude: businessname[4]['latitude'],longitude: businessname[4]['longitude']},
+  {latitude: businessname[5]['latitude'],longitude: businessname[5]['longitude']},
+  {latitude: businessname[6]['latitude'],longitude: businessname[6]['longitude']},
+  {latitude: businessname[7]['latitude'],longitude: businessname[7]['longitude']},
+  {latitude: businessname[8]['latitude'],longitude: businessname[8]['longitude']},
+  {latitude: businessname[9]['latitude'],longitude: businessname[9]['longitude']}
+];
+  var result = geolib.getCenter(allmc)
+  return "center is at" + result["latitude"] + " , " + result["longitude"]
+}
+
+function solution5(){
+  var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+  var businessmc = _.filter(businessesInPhoenix, {"name": "McDonald's"})
+  var businessstar = _.filter(businessesInPhoenix, {"name": "Starbucks"})
+  if(_.size(businessmc) > _.size(businessstar)){return "McDonald's"}
+  else{return "Starbucks"}
+}
+
+function solution6(){
+    var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+    var businessstar = _.filter(businessesInPhoenix, {"name": "Starbucks"})
+    var sort = _.sortBy(businessstar,"review_count")
+    return sort[_.size(sort)-1]["name"] + " at " + sort[_.size(sort)-1]["full_address"]
+}
+
+function solution7(){
+  var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+  var businessname = _.filter(businessesInPhoenix, {"name": "McDonald's"})
+  var businessstar = _.filter(businessesInPhoenix, {"name": "Starbucks"})
+  var sort = _.sortBy(businessstar,"review_count")
+  var allmc = [{latitude: businessname[0]['latitude'],longitude: businessname[0]['longitude']},
+  {latitude: businessname[1]['latitude'],longitude: businessname[1]['longitude']},
+  {latitude: businessname[2]['latitude'],longitude: businessname[2]['longitude']},
+  {latitude: businessname[3]['latitude'],longitude: businessname[3]['longitude']},
+  {latitude: businessname[4]['latitude'],longitude: businessname[4]['longitude']},
+  {latitude: businessname[5]['latitude'],longitude: businessname[5]['longitude']},
+  {latitude: businessname[6]['latitude'],longitude: businessname[6]['longitude']},
+  {latitude: businessname[7]['latitude'],longitude: businessname[7]['longitude']},
+  {latitude: businessname[8]['latitude'],longitude: businessname[8]['longitude']},
+  {latitude: businessname[9]['latitude'],longitude: businessname[9]['longitude']}
+];
+  var near = geolib.findNearest({latitude: sort[_.size(sort)-1]["latitude"],longitude:  sort[_.size(sort)-1]["longitude"]},allmc)
+  return businessname[near["key"]]["full_address"]
+}
+
+function solution8(){
+  var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+  var businessname = _.filter(businessesInPhoenix, {"name": "McDonald's"})
+  var businessstar = _.filter(businessesInPhoenix, {"name": "Starbucks"})
+  var sort = _.sortBy(businessstar,"review_count")
+  var allmc = [{latitude: businessname[0]['latitude'],longitude: businessname[0]['longitude']},
+  {latitude: businessname[1]['latitude'],longitude: businessname[1]['longitude']},
+  {latitude: businessname[2]['latitude'],longitude: businessname[2]['longitude']},
+  {latitude: businessname[3]['latitude'],longitude: businessname[3]['longitude']},
+  {latitude: businessname[4]['latitude'],longitude: businessname[4]['longitude']},
+  {latitude: businessname[5]['latitude'],longitude: businessname[5]['longitude']},
+  {latitude: businessname[6]['latitude'],longitude: businessname[6]['longitude']},
+  {latitude: businessname[7]['latitude'],longitude: businessname[7]['longitude']},
+  {latitude: businessname[8]['latitude'],longitude: businessname[8]['longitude']},
+  {latitude: businessname[9]['latitude'],longitude: businessname[9]['longitude']}
+];
+  distance = geolib.orderByDistance({latitude: sort[_.size(sort)-1]["latitude"],longitude:  sort[_.size(sort)-1]["longitude"]},allmc)
+
+  var within = _.filter(distance, function(x){
+    return x["distance"] <= 20000
+  })
+  return _.size(within)
+}
+
+function solution9(){
+  var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+  var businessname = _.filter(businessesInPhoenix, {"name": "McDonald's"})
+  var sort = _.sortBy(businessname,"latitude")
+  return ("Southernmost McDonald's located at " + businessname[0]["full_address"] + "; Northernmost McDonald's located at " + businessname[_.size(sort)-1]["full_address"])
+}
+
+function solution10(){
+  var mcdonaldsCoordinates = _.map(_.filter(_.filter(items, {'city': 'Phoenix'}), {'name': "McDonald's"}), function(d) {
+      return { 'name': d.name, 'address': d.full_address, 'latitude': d.latitude, 'longitude': d.longitude }
+  })
+  var starbucksCoordinates = _.map(_.filter(_.filter(items, {'city': 'Phoenix'}), {'name': "Starbucks"}), function(d) {
+      return { 'name': d.name, 'address': d.full_address, 'latitude': d.latitude, 'longitude': d.longitude }
+  })
+  var distanceToStarbucks = _.map(mcdonaldsCoordinates, function(d) {
+      var c1 = {latitude: d.latitude, longitude: d.longitude}
+      return _.map(starbucksCoordinates, function(f) {
+          var c0 = {latitude: f.latitude, longitude: f.longitude}
+          var distance = geolib.getDistance(c0,c1)
+          return { 'name': d.name, 'address': d.address, 'distance': distance }
+      })
+  })
+  var minDistances = _.map(distanceToStarbucks, function(d) {
+      var min_distance = _.min(_.pluck(d, 'distance'))
+      var address = _.unique(_.pluck(d, 'address'))
+      return { 'address': address, 'distance': min_distance }
+  })
+  return _.map(_.filter(minDistances, function(d) {
+      return d.distance > 5000
+  }), function(d) {
+      return d.address[0]
+  }).join(", ") + "has no Starbucks in its 5 km radius."
+}
+
+function run(id, solutionFunc, data){
+    console.log('run solution for ' + id)
+    var answer = solutionFunc(data)
+    $(id).find('.answer').html(answer)
+}
+
+function loadDataThenRunSolutions(){
+    $.get({url: 'http://bigdatahci2015.github.io/data/yelp/yelp_academic_dataset_business.5000.json.lines.txt'})
+     .done(function(data){
+         var lines = data.trim().split('\n')
+
+         // convert text lines to json arrays and save them in `items`
+         items = _.map(lines, JSON.parse)
+
+         console.log('number of items loaded:', items.length)
+         console.log('first item', items[0])
+
+         run('#q1', solution1, items)
+         run('#q2', solution2, items)
+         run('#q3', solution3, items)
+         run('#q4', solution4, items)
+         run('#q5', solution5, items)
+         run('#q6', solution6, items)
+         run('#q7', solution7, items)
+         run('#q8', solution8, items)
+         run('#q9', solution9, items)
+         run('#q10', solution10, items)
+     })
+     .fail(function(err){
+         console.error(err)
+     })
+}
+
+loadDataThenRunSolutions()
+
+    </script>
+
+</body>
+</html>
