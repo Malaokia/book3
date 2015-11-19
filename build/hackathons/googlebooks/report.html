@@ -39,7 +39,7 @@
     <div class="parallax">
       <img src="http://res.cloudinary.com/craftml/image/upload/c_scale,e_brightness:-62,w_1000/v1447038536/books_nh4k05.jpg">
       <h1 id="title">How did word usage change over time?
-        <div class="authors">by [Name 1], [Name 2], [Name 3], [Name 4]</div>
+        <div class="authors">by Zach Lamb, Andrew Linenfelse, Ming Liew</div>
       </h1>
     </div>
   </div>
@@ -65,7 +65,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
   <script>
-
 function toggleSourecode(){
   $('pre').each(function(){
     if ($(this).height()){
@@ -77,7 +76,6 @@ function toggleSourecode(){
   })
 }
 $('.switch input').click(toggleSourecode)
-
 function csv2jsonArray(rawdata){
   console.log('converting csv to json array')
   var lines = rawdata.trim().split('\n')
@@ -89,75 +87,58 @@ function csv2jsonArray(rawdata){
     // return {decade:1900, word: 'the', count: 721149566}
   })
 }
-
 var items
 $.ajax({url: 'https://big-data-hci-hackathon.firebaseapp.com/data/ngrams_10000.csv'})
  .done(function(rawdata){
-
   items = csv2jsonArray(rawdata)
   console.log('number of items loaded:', items.length)
   console.log('first item:', items[0])
-
   analyze()
-
  })
  .fail(function(err){
      console.error(err)
  })
-
 function ask(text, func){
   var answer = func(items)
-
   // html element to display the answer
   var answerHtml = '<div class="collection-item answer">' +
       '<h4>' + text + '</h4>' +
       '<div>' + answer + '</div>' +
       '<pre><code>' + func.toString() + '</code></pre>' +
     '</div>'
-
   // append to #quetions
   $('#questions').append(answerHtml)
 }
-
 function analyze(){
-  ask('question1?', func1)
-  ask('question2?', func2)
+  ask('Can we see how gender equality has changed in Latin American culture in the past 200 years?', func1)
+  ask('When did Artificial Intelligence become popular in the mainstream society?', func2)
   ask('question3?', func3)
   ask('question4?', func4)
   ask('question5?', func5)
-
   $('pre code').each(function(i, block) {
     hljs.highlightBlock(block);
   })
   toggleSourecode()
 }
-
 function func1(){
-  return <iframe name="ngram_chart" src="" width=900 height=500 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no>
-  </iframe>
+  return '<iframe name="ngram_chart" src="https://books.google.com/ngrams/interactive_chart?content=se%C3%B1ora%2Cfeminista%2Cse%C3%B1orita&year_start=1900&year_end=2015&corpus=21&smoothing=3&share=&direct_url=t1%3B%2Cse%C3%B1ora%3B%2Cc0%3B.t1%3B%2Cfeminista%3B%2Cc0%3B.t1%3B%2Cse%C3%B1orita%3B%2Cc0" width=900 height=500 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no></iframe>'
 }
-
 function func2(){
-  return '...'
+  return '<iframe name="ngram_chart" src="https://books.google.com/ngrams/interactive_chart?content=singularity%2CAI%2Cartificial+intelligence%2CTerminator&year_start=1900&year_end=2008&corpus=15&smoothing=0&share=&direct_url=t1%3B%2Csingularity%3B%2Cc0%3B.t1%3B%2CAI%3B%2Cc0%3B.t1%3B%2Cartificial%20intelligence%3B%2Cc0%3B.t1%3B%2CTerminator%3B%2Cc0" width=900 height=500 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no></iframe>'
 }
-
 function func3(){
   return '...'
 }
-
 function func4(){
   return '...'
 }
-
 function func5(){
   return '...'
 }
-
 // initialize the parallax effect
 $(document).ready(function(){
     $('.parallax').parallax()
 })
-
     </script>
 
 </body>
