@@ -8,9 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
 </head>
 <body>
-
 <div class="container">
-
     <h1 id="title">Zayo Analysis
         <div class="authors">by Andrew Linenfelser, Zach Lamb, Ming Liew </div>
       </h1>
@@ -35,119 +33,11 @@
         <div class="answer"></div>
     </section>
 </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
-
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="/js/moment.min.js"></script>
-    <script>
-
-var items   // global scope (i.e., can be accessed in javascript console)
-
-function solution1(){
-	function product(product,prodLetter){
-		var productName = items.map(function(d) {return d[product];});
-		console.log(productName)
-		var arrayLength = productName.length;
-		var result = productName
-		for (var i = 0; i < arrayLength; i++) {
-	    	result[i] = parseFloat(productName[i].replace(/,/g, ''));
-	    //Do something
-		}
-		result = _.filter(result,function(d){
-			return d > 0
-		})
-		return "product " + prodLetter + ": " + result.length
-	}
-	var A = product('Product A Total BRR',"A")
-	var B = product('Product B Total BRR',"B")
-	var C = product('Product C Total BRR',"C")
-	var D = product('Product D Total BRR',"D")
-	var F = product('Product F - Metro Rank',"F")
-	return A + "</br>" + B + "</br>" + C + "</br>" + D + "</br>" + F
-}
-
-function solution2(){
-  console.log('items:::::', items)
-  var sort = _.sortByOrder(items, function(d){
-    return d['Total (BRR)']//change to total (BRR) when fixed
-  })
-  console.log('sort', sort)
-  var best = sort[sort.length-1]
-  console.log('best: ', best)
-  return 'the best Total BRR is ' + best['Total (BRR)'] + ' and the industry is ' + best.Industry
-  // var healthcare = _.groupBy(items,function(d){
-  //       return d.Industry == 'Health Insurance'
-  //   })['true']
-  // console.log('healthcare', healthcare)
-  
-  // var brr = _.pick(healthcare, function(d){
-  //   return d['Product A Total BRR'] || d['Product B Total BRR'] || d['Product C Total BRR']
-  // })
-  // console.log('brr: ', brr)
-}
-function solution3(){
-	var products=_.groupBy(items, function(g){
-    return g.Industry
-  })
-  var key = _.map(products, function(x,k){
-   return k
-  })
-  var s = _.map(products, function(x,k){
-    var sum = 0
-    _.forEach(x, function(s){
-      var a =parseInt(s['Total'].split("$")[1].split('.')[0].split(',').join(''));
-      sum = sum+ a;
-    })
-   return sum
-  })
-  console.log(s)
-  console.log(key)
-  var result = ''
-  var ctr = 0
-  _.forEach(key,function(x){
-    result += x + " : " + s[ctr] + ' ; '
-    ctr++
-  })
-  return result
-}
-function solution4(){
-  return '...'
-}
-function solution5(){
-  return '...'
-}
-function run(id, solutionFunc, data){
-    console.log('run solution for ' + id)
-    var answer = solutionFunc(data)
-    $(id).find('.answer').html(answer)
-}
-function loadDataThenRunSolutions(){
-    $.get({url: '../Team/profile.json'})
-     .done(function(data){
-        //  var lines = data.trim().split('\n')
-        items = data
-         // convert text lines to json arrays and save them in `items`
-        //  items = _.map(lines, JSON.parse)
-
-         console.log('number of items loaded:', items.length)
-         console.log('first item', items[0])
-
-         run('#q1', solution1, items)
-         run('#q2', solution2, items)
-         run('#q3', solution3, items)
-         run('#q4', solution4, items)
-         run('#q5', solution5, items)
-     })
-     .fail(function(err){
-         console.error(err)
-     })
-}
-
-loadDataThenRunSolutions()
-
-    </script>
-
+    <script src="solution.js"></script>
 </body>
 </html>
