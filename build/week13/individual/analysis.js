@@ -74,7 +74,6 @@ function example3(){
 }
 
 function func1(){
-  console.log(items)
   var s = _.flatten(_.pluck(items, 'Samples'))
   var unique = _.uniq(_.filter(s, function(d){
     return d > 0
@@ -104,7 +103,6 @@ function func3(){
   var r = _.filter(f.Samples,function(x){
     return parseInt(x) == 8
   })
-  console.log(r)
   return r.length
 }
 
@@ -158,42 +156,127 @@ function func6(){
 }
 
 function func7(){
-
-  // this sample code shows how to display a map and put a marker to visualize
-  // the location of the first item (i.e., measurement data)
-  // you need to adapt this code to answer the question
-
-  var first = items[0]
-  var pos = [first.Latitude, first.Longitude]
-  var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
-  $(el).height(500) // set the map to the desired height
-  var map = createMap(el, pos, 5)
-
-  var circle = L.circle(pos, 500, {
-      color: 'red',
-      fillColor: '#f03',
-      fillOpacity: 0.5
-  }).addTo(map);
-  return '...'
+var el = $(this).find('.viz')[0]
+$(el).height(500)
+var circle = L.circle([items[0].Latitude, items[0].Longitude], 500, {
+    color: 'red',
+    fillColor: '#f03',
+    fillOpacity: 0.5
+}).addTo(createMap(el, [items[0].Latitude, items[0].Longitude], 5));
 }
 
 function func8(){
-  console.log(items)
-  return '...'
+  var pos = [items[0].Latitude, items[0].Longitude]
+  var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
+  $(el).height(500) // set the map to the desired height
+  var map = createMap(el, [items[0].Latitude, items[0].Longitude], 9)
+  _.forEach(items, function(i){
+    L.circle([i.Latitude, i.Longitude], 500, {
+      color: 'red',
+      fillColor: '#f03',
+      fillOpacity: 0.5
+    }).addTo(map);
+  })
 }
 
 function func9(){
+  var el = $(this).find('.viz')[0]
+  $(el).height(500)
+  var map = createMap(el, [geolib.getCenter([
+      {latitude: items[0].Latitude, longitude: items[0].Longitude},
+      {latitude: items[items.length-1].Latitude, longitude: items[items.length-1].Longitude}
+    ]).latitude, geolib.getCenter([
+        {latitude: items[0].Latitude, longitude: items[0].Longitude},
+        {latitude: items[items.length-1].Latitude, longitude: items[items.length-1].Longitude}
+      ]).longitude], 12)
+
+  var mostCommon = _.chain(items)
+    .map('Samples')
+    .flatten()
+    .filter(function(d) { return d > 0 })
+    .groupBy()
+    .mapValues('length')
+    .pairs()
+    .max(function(d) { return d[1] })
+    .value()[0]
+
+  _.forEach(items, function(x, index) {
+    if (_.includes(x.Samples, mostCommon)) {
+      var latlng = [parseFloat(x.Latitude), parseFloat(x.Longitude)]
+      L.circle(latlng, 50, {color: 'red', fillColor: 'green', fillOpacity: 0.7}).addTo(map)
+    }
+  })
   return '...'
 }
 
 function func10(){
+  var el = $(this).find('.viz')[0]
+  $(el).height(500)
+  var map = createMap(el, [geolib.getCenter([
+      {latitude: items[0].Latitude, longitude: items[0].Longitude},
+      {latitude: items[items.length-1].Latitude, longitude: items[items.length-1].Longitude}
+    ]).latitude, geolib.getCenter([
+        {latitude: items[0].Latitude, longitude: items[0].Longitude},
+        {latitude: items[items.length-1].Latitude, longitude: items[items.length-1].Longitude}
+      ]).longitude], 12)
+
+  var counts = _.map(items, function(x) {
+    var count = _.filter(x.Samples, function(s) { return s > 0 }).length
+    return [x.Latitude, x.Longitude, count]
+  })
+  var colors = ['#c6e1f1', '#a1cee9', '#7bbbe0', '#55a7d7', '#3c8ebd', '#2e6e93', '#285e7e',
+    '#214f69', '#1a3f54', '#142f3f']
+  _.forEach(counts, function(x){
+    if(x[2] != 0) {
+      var latlng = [parseFloat(x[0]), parseFloat(x[1])]
+      var color = colors[parseInt(x[2]/10)]
+      L.circle(latlng, 5, { color: color, fillOpacity: 4 }).addTo(map);
+    }
+  })
   return '...'
 }
 
 function func11(){
+   var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
+   $(el).height(500) // set the map to the desired height
+   var map = createMap(el, [items[0].Latitude, items[0].Longitude], 12)
+   _.forEach(_.map(items, function(i){
+      return {
+        depth: i.Depth_stop,
+        position: [i.Latitude, i.Longitude],
+        fishes: _.filter(i.Samples, function(s){
+          return parseInt(s) == 1 || parseInt(s) == 3
+        }).length
+      }
+    }), function(i){
+     L.circle(i.position, i.fishes*10, {
+       color: 'blue',
+       fillColor: '#f03',
+       fillOpacity: 0.5
+     }).addTo(map);
+   })
+   return "map"
   return '...'
 }
 
 function func12(){
+   var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
+   $(el).height(500) // set the map to the desired height
+   var map = createMap(el, [items[0].Latitude, items[0].Longitude], 13)
+   _.forEach(_.map(items, function(i){
+      return {
+        depth: i.Depth_stop,
+        position: [i.Latitude, i.Longitude],
+        zoo: _.filter(i.Samples, function(s){
+          return parseInt(s) == 7 || parseInt(s) == 13
+        }).length
+      }
+    }), function(i){
+     L.circle(i.position, i.zoo*10, {
+       color: 'green',
+       fillColor: '#f03',
+       fillOpacity: 0.5
+     }).addTo(map);
+   })
   return '...'
 }
