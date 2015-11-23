@@ -1,43 +1,55 @@
 <html>
 <head>
-    <style>
-        .answer {
-            min-height: 50px
-        }
-    </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
-</head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chartist/0.9.4/chartist.min.css">
+<head>
 <body>
+
 <div class="container">
-    <h1 id="title">Zayo Analysis
-        <div class="authors">by Andrew Linenfelser, Zach Lamb, Ming Liew </div>
-      </h1>
+
+    <h1>Zayo Analysis</h1>
+
     <section id="q1" class="question">
-        <h4>Of the Tranzact accounts that have services: What industries/verticals spend the most money and on what products/services?</h4>
-        <div class="answer"></div>
+        <h4> 1.Of the Tranzact accounts that have services: What industries/verticals spend the most money and on what products/services?</h4>
+        <div class="answer ct-double-octave"></div>
     </section>
+
     <section id="q2" class="question">
-        <h4> If Zayo only had enough team members to focus on two products, which products would you prioritize?</h4>
-        <div class="answer"></div>
+        <h4>2.If Zayo only had enough team members to focus on two products, which products would you prioritize?</h4>
+        <div class="answer ct-double-octave"></div>
     </section>
+
     <section id="q3" class="question">
-        <h4>If Zayo only had 5 representatives, which states would you prioritize for in­person meetings?</h4>
-        <div class="answer"></div>
+        <h4>3(a).If Zayo only had 5 representatives, which states would you prioritize for inÃ‚Â­person meetings?</h4>
+        <div style="height:600px" class="answer ct-double-octave"></div>
     </section>
-     <section id="q4" class="question">
-        <h4> If Zayo sent quotes to all Tranzact accounts, how would you prioritize the customer account list? (And list the prioritized accounts from 1 to ####).</h4>
-        <div class="answer"></div>
+    <section id="q4" class="question">
+        <h4>3(b): Vertical Profits</h4>
+        <div style="height:1200px" class="answer ct-double-octave"></div>
     </section>
+
     <section id="q5" class="question">
-        <h4>Of the Tranzact accounts without services: How would you prioritize which accounts togo after first and which products would they potentially buy?</h4>
-        <div class="answer"></div>
+        <h4>4.If Zayo sent quotes to all Tranzact accounts, how would you prioritize the customer
+account list?</h4>
+        <div style="height:10000px"class="answer ct-double-octave"></div>
     </section>
+    <section id="q6" class="question">
+        <h4>4b.If Zayo sent quotes to all Tranzact accounts, how would you prioritize the customer
+account list?</h4>
+        <div style="height:10000px"class="answer ct-double-octave"></div>
+    </section>
+    <section id="q7" class="question">
+        <h4>5.Of the Tranzact accounts without services: How would you prioritize which accounts togo after first and which products would they potentially buy?</h4>
+        <div class="answer ct-double-octave"></div>
+    </section>
+
 </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartist/0.9.4/chartist.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
-    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <script src="/js/moment.min.js"></script>
+    <script src="/js/geolib.js"></script>
     <script src="solution.js"></script>
 </body>
 </html>

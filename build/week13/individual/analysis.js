@@ -74,27 +74,87 @@ function example3(){
 }
 
 function func1(){
-  return '...'
+  console.log(items)
+  var s = _.flatten(_.pluck(items, 'Samples'))
+  var unique = _.uniq(_.filter(s, function(d){
+    return d > 0
+  }))
+  return _.size(unique)
 }
 
 function func2(){
-  return '...'
+  var s = _.flatten(_.pluck(items, 'Ping_time'))
+  var diff = _.map(s, function(item,i){
+    if( i == 0) return 0
+    else{
+      var s0 = s[i-1].split(":")
+      var s1 = s[i].split(':')
+      var t0 = parseInt(s0[0])*3600+parseInt(s0[1])*60+parseInt(s0[2])
+      var t1 = parseInt(s1[0])*3600+parseInt(s1[1])*60+parseInt(s1[2])
+      return t1-t0
+    }
+  })
+  return _.sum(diff)/diff.length + "sec"
 }
 
 function func3(){
-  return '...'
+  var f = _.filter(items,function(x){
+    return _.contains(x.Ping_time, "09:57:18")
+  })
+  var r = _.filter(f.Samples,function(x){
+    return parseInt(x) == 8
+  })
+  console.log(r)
+  return r.length
 }
 
 function func4(){
-  return '...'
+  var key = 0;
+  var ctr = 0;
+  _.map(items,function(x){
+    var count = 0;
+    _.map(x.Samples,function(y){
+      if(parseInt(y) == 3){
+        count++;
+      }
+    })
+    if(count > ctr){
+      key = x.Ping_index
+      ctr = count
+    }
+  })
+  return "it's the " + key + "th with" + ctr + "count of value 3"
 }
 
 function func5(){
-  return '...'
+  var f = _.filter(items,function(x){
+    var ctr = 0;
+    _.forEach(x.Samples,function(y){
+      if(parseInt(y) > 0){
+        ctr++;
+      }
+    })
+    return ctr == 0;
+  })
+  return f.length
 }
 
 function func6(){
-  return '...'
+  var s = _.flatten(_.pluck(items,'Samples'))
+
+  var counts = {};
+  for (var i = 0; i < s.length; i++) {
+    counts[s[i]] = 1 + (counts[s[i]] || 0);
+  }
+  var ctr = 0;
+  var key = 0;
+  _.map(counts,function(x,y){
+    if(x > ctr){
+      ctr = x;
+      key = y;
+    }
+  })
+  return key + " has " + _.max(counts) + " occurrences"
 }
 
 function func7(){
@@ -118,6 +178,7 @@ function func7(){
 }
 
 function func8(){
+  console.log(items)
   return '...'
 }
 
