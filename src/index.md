@@ -12,6 +12,7 @@ layout: layout.hbs
 * [Week 11](week11/individual)
 * [Week 12](week12/)
 * [Week 13](week13/)
+* [Week 14](week14/individual/stats.html)
 
 ## Hackathons
 
