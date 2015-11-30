@@ -35,10 +35,6 @@
         <div class="answer chart"></div>
     </section>
 
-    <section id="q2" class="question">
-        <h4>What is the relationship between review counts and stars?</h4>
-        <div class="answer chart"></div>
-    </section>
 
     <section id="q3" class="question">
         <h4>What is the distance (km) between the two McDonald's in the city of Gilbert?</h4>
@@ -88,7 +84,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-statistics/1.0.0/simple_statistics.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
-
+    <script src="http://bigdatahci2015.github.io/data/js/geolib.js"></script>
     <script>
 
 var items   // global scope (i.e., can be accessed in javascript console)
@@ -106,8 +102,8 @@ function example2(){
 }
 
 function solution1(){
-    var reviews = [40,50,60,70,80,90,50]
-    var stars = [2.5,2.5,3.5,3.5,2.5,4.5,4.5]
+    var reviews = _.pluck(items,'stars')
+    var stars = _.pluck(items,'review_count')
     var data = {
         xs: {
             stars: 'stars_x'
@@ -138,37 +134,95 @@ function solution1(){
 }
 
 function solution3(){
-    var businessesInGilbert = _.filter(items, {city: 'Gilbert'})
-    // TODO: find McDonloads and compute the distance between the first two
-    return 'TODO'
+    var businessesInGilbert = _.filter(items, {city: 'Gilbert',name: "McDonald's"})
+    var e0 = {latitude: businessesInGilbert[0].latitude,longitude: businessesInGilbert[0].longitude}
+    var e1 = {latitude: businessesInGilbert[1].latitude,longitude: businessesInGilbert[1].longitude}
+    var result = geolib.getDistance(e0,e1)/1000 + 'km'
+    return result
 }
 
 function solution4(){
-    return 'TODO'
+  var businessesInGilbert =  _.filter(items, {city: 'Phoenix',name: "McDonald's"})
+  var coord = geolib.getCenter(_.map(businessesInGilbert,function(x){
+    return {'latitude': x.latitude, 'longitude': x.longitude}
+  }))
+  var result = coord.latitude + " , " + coord.longitude
+  return result
 }
 
 function solution5(){
-    return 'TODO'
+  var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+  var m = _.size(_.filter(businessesInPhoenix, {'name': "McDonald's"}))
+  var s = _.size(_.filter(businessesInPhoenix, {'name': "Starbucks"}))
+  var result = (m>s) ? "McDonald": "Starbucks"
+  result = (m==s) ? "Same #": result
+  return result
 }
 
 function solution6(){
-    return 'TODO'
+  var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+  var m = _.filter(businessesInPhoenix, {'name': "McDonald's"})
+
+  var s = _.filter(m,function(x){
+    return x.review_count == 16
+  })
+  return s[0].full_address
 }
 
 function solution7(){
-    return 'TODO'
+  var businessesInPhoenix = _.filter(items, {city: 'Phoenix'})
+  var sol6 = _.filter(businessesInPhoenix,function(x){
+    return x.full_address == solution6() && x.name == "McDonald's"
+  })
+  var sol7 = _.filter(businessesInPhoenix,function(x){
+    return x.name == "Starbucks"
+  })
+  var index = 0
+  _.map(_.map( _.map(sol7,function(x){return x.review_count}),function(x){return x-sol7[0].review_count}),function(i,x){
+    if(x == 0){index = i}
+  })
+  return sol7[index].full_address
 }
 
 function solution8(){
-    return 'TODO'
+  var rev_max = _.max(_.filter(_.filter(items, {city: 'Phoenix'}), {"name": "Starbucks"}),"review_count");
+  var c = _.filter(_.filter(items, {city: 'Phoenix'}), function(x){
+      return x.categories && _.includes(x.categories, "Coffee & Tea");
+  });
+  var in2 = _.filter(c, function(x){
+      var dist = geolib.getDistance({latitude: rev_max.latitude, longitude: rev_max.longitude},{latitude: x.latitude,  longitude: x.longitude});
+      return (dist <= 2000);
+  });
+ return _.size(in2)+" shops."
 }
 
 function solution9(){
-    return 'TODO'
+  var n = _.last(_.sortBy(_.filter(_.filter(items, {city: 'Phoenix'}), {"name": "McDonald's"}), "latitude"))
+  var s = _.first(_.sortBy(_.filter(_.filter(items, {city: 'Phoenix'}), {"name": "McDonald's"}), "latitude"))
+  return "Northernmost: "+n.full_address+"; Southernmost: "+s.full_address
 }
 
 function solution10(){
-    return 'TODO'
+  var len = _.size(_.filter(_.filter(items, {city: 'Phoenix'}), {"name": "Starbucks"}));
+  var m= _.filter(_.filter(_.filter(items, {city: 'Phoenix'}), {"name": "McDonald's"}), function(d){
+     // find a SB w/in 5km
+     closeSB = _.find(_.filter(_.filter(items, {city: 'Phoenix'}), {"name": "Starbucks"}),function(e){
+         var dist = geolib.getDistance(
+             {latitude: d.latitude,  longitude: d.longitude},
+             {latitude: e.latitude,  longitude: e.longitude});
+        // console.log (dist+": "+d.business_id)
+         return dist <= 5000;
+     });
+     if (_.isUndefined(closeSB)) {
+         return true;  // keep the McD's that don't have a close SB
+     }
+     return false;
+  })
+  var result = 0
+  if (_.size(m) == 1)
+    result = "It's at: "+m[0].full_address
+  if (_.size(m) > 1){  result = _.pluck(m, 'full_address').join(',<br> ')}
+  return result
 }
 
 function run(id, solutionFunc, data){
@@ -191,15 +245,15 @@ function loadDataThenRunSolutions(){
          run('#e1', example1, items)
          run('#e2', example2, items)
          run('#q1', solution1, items)
-        //  run('#q2', solution2, items)
-        //  run('#q3', solution3, items)
-        //  run('#q4', solution4, items)
-        //  run('#q5', solution5, items)
-        //  run('#q6', solution6, items)
-        //  run('#q7', solution7, items)
-        //  run('#q8', solution8, items)
-        //  run('#q9', solution9, items)
-        //  run('#q10', solution10, items)
+         //run('#q2', solution2, items)
+         run('#q3', solution3, items)
+         run('#q4', solution4, items)
+         run('#q5', solution5, items)
+         run('#q6', solution6, items)
+         run('#q7', solution7, items)
+         run('#q8', solution8, items)
+         run('#q9', solution9, items)
+         run('#q10', solution10, items)
      })
      .fail(function(err){
          console.error(err)
