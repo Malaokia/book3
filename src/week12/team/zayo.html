@@ -114,7 +114,7 @@ function run(id, solutionFunc, data){
     $(id).find('.answer').html(answer)
 }
 function loadDataThenRunSolutions(){
-    $.get({url: 'malaokia.github.io/book3/week12/team/profile.json'})
+    $.get({url: 'profile.json'})
      .done(function(data){
         //  var lines = data.trim().split('\n')
         items = data

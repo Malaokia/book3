@@ -459,13 +459,13 @@ function run(id, solutionFunc, data){
 }
 
 function loadDataThenRunSolutions(){
-  $.get('http://localhost:8083/week13/team/CustomerAccount-Details.json')
+  $.get('CustomerAccount-Details.json')
       .done(function(data){
         DetailsItems = data
-        $.get('http://localhost:8083/week13/team/CustomerAccount-Services.json')
+        $.get('CustomerAccount-Services.json')
           .done(function(data){
             ServicesItems = data
-            $.get('http://localhost:8083/week13/team/servicesNew.json')
+            $.get('servicesNew.json')
               .done(function(data){
                 NoServicesItems =data
                 analyze()
