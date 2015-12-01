@@ -104,8 +104,8 @@ function solution3a(){
       return _.isNumber(x)
     })
     var data = {
-      labels: k,
-      series: [v]
+      labels: _.take(k,10),
+      series: [_.take(v,10)]
     };
   options = {stackBars: true, horizontalBars: true}
 
@@ -201,8 +201,8 @@ function solution3b(){
     return _.isNumber(x)
   })
   var data = {
-    labels: k,
-    series: [v]
+    labels: _.take(k,10),
+    series: [_.take(v,10)]
   };
 
   options = {stackBars: true, horizontalBars: true}
@@ -231,6 +231,12 @@ function solution3c(){
       }))
     })
     .value()
+  var stateid = _.mapValues(_.groupBy(emptystate,function(x){
+    if(x['State Z'] != "" &&(x['State A'] != x['State Z']))
+      return x['State Z']
+    else
+      return x['State A']
+  })
   var stateid = _.chain(emptystate)
       .groupBy(function(x){
         if(x['State Z'] != "" &&(x['State A'] != x['State Z'])){
@@ -243,14 +249,15 @@ function solution3c(){
         return  _.chain(DetailsItems)
           .filter(function(x){return _.contains(["Consulting / Other Professional Services","Finance", "Internet Content & Software", "Legal","Federal Government", "Retail",
            "Healthcare", "Colo/Hosting", "Manufacturing", "Real Estate / Construction"],x['Vertical'])})
-          .groupBy('Vertical')
-          .mapValues('length')
-          .defaults({"Consulting / Other Professional Services":0},{"Finance":0}, {"Internet Content & Software":0}, {"Legal":0},{"Federal Government":0}, {"Retail":0},
-           {"Healthcare":0}, {"Colo/Hosting":0}, {"Manufacturing":0}, {"Real Estate / Construction":0})
-          .pairs()
-          .unzip()
-          .value()[1]
+          .groupBy(function(n){
+            console.log(n,x)
+
+          })
+
+          .value()
         }).value();
+
+  console.log(stateid)
   var s = _.slice(_.values(stateid),0,10)
   var data = {
     labels : ["MD", "CA", "NV", "TX", "GA", "MN", "IN", "TN", "KS", "IL", "CO", "NY", "VA", "DC", "MA", "AZ", "IA", "AL", "WA","MI", "NJ", "NE", "CT", "ID", "PA", "UT", "OH", "MT", "MO", "MS", "FL", "OR", "NC", "KY", "WY", "AK", "NM"],
@@ -295,8 +302,8 @@ function solution4(){
     return _.isNumber(x)
   })
   var data = {
-    labels: k.reverse(),
-    series: [v.reverse()]
+    labels: _.take(k,10),
+    series: [_.take(v,10)]
   };
   options = {stackBars: true, horizontalBars: true}
 
@@ -351,8 +358,8 @@ function solution4b(){
       return _.isNumber(x)
     })
     var data = {
-      labels: k,
-      series: [v]
+      labels: _.take(k,10),
+      series: [_.take(v,10)]
     };
   options = {stackBars: true, horizontalBars: true}
 
@@ -363,41 +370,62 @@ function solution4b(){
       }
     })
 }
-
+/*
+.filter(function(x){return !_.contains(x[" Total BRR "],"$-")})
+.groupBy('Name/ID')
+.mapValues(function(x){
+  return _.sum(_.map(x,function(e){
+    var strnum = e[' Total BRR '].split("$")[1].split(',').join("")
+    if(!_.contains(strnum,"-"))
+      return parseInt(strnum)
+  }))
+})*/
 function solution5(){
-    /*: replace the hard coded values in series by actual computation
-  var groups = _.groupBy(items, 'CrsPBADept')
-	hist = _.pairs(_.mapValues(_.groupBy(groups["HIST"],'CrsLvlNum'),function(d){
-		return d.length
-	}));
-	cs = _.pairs(_.mapValues(_.groupBy(groups["CSCI"],"CrsLv1Num"),function(d){
-		return d.length
-	}));
-	histNums = _.sortBy(hist, function(d){
-		return d[0]
-	});
-	csNums = _.sortBy(cs, function(d) {
-		return d[0]
-	});
+  /*var S =   _.filter(NoServicesItems,function(x){
+      return (_.contains(x['Industry'],"Telecommunications")||_.contains(x['Industry'],"Other Enterprise")||_.contains(x["Industry"],"Professional Services"))
+    })
+  S = _.filter(S,function(x){
+    return _.contains(x["Delinquency  Rate"],"Low Risk")
+  })
+  var B = _.chain(S)
+    .groupBy(function(x){
+      return toString(x["Name/ID"])
+    })
+    .mapValues(function(x){
+      return parseInt(x[0]['SalesVolume'])
+    })
+    .value();
+  console.log(B)
 
-	x = _.take(_.map(histNums,function(d){
-				return d[0];
-	}),4);
-	y = _.take(_.map(histNums,function(d){
-				return d[1];
-	}),4);
-	z = _.take( _.map(csNums,function(d){
-				return d[1]
-	}),4);
-	var data = {
-    labels: x ,
-    series: [y,z]
-  };
-  console.log("x ",x)
-  console.log("y",y)
-  console.log("z",z)
-  new Chartist.Bar('#q5 .answer', data);*/
-  return '...'
+  var i = Object.keys(B).map(function(key){
+    if(_.isUndefined(B[key])){
+      B[key] = 0
+    }
+    return [key,B[key]-B[key]];
+    });
+    i.sort(function(f,s){
+      return s[1] -f[1];
+    });
+        var k = _.filter(_.flatten(i),function(x){
+          return _.isNumber(x)
+        })
+
+        var v = _.filter(_.flatten(i),function(x){
+          return _.isString(x)
+        })
+        console.log(i)
+        var data = {
+          labels: k,
+          series: [v]
+        };
+      options = {stackBars: true, horizontalBars: true}
+
+      new Chartist.Bar('#q6 .answer', data, options)
+        .on('draw', function(data) {
+          if(data.type === 'bar') {
+            data.element.attr({ style: 'stroke-width: 10px' })
+          }
+        })*/
 }
 function toggleSourecode(){
   $('pre').each(function(){
@@ -437,7 +465,7 @@ function loadDataThenRunSolutions(){
         $.get('http://localhost:8083/week13/team/CustomerAccount-Services.json')
           .done(function(data){
             ServicesItems = data
-            $.get('http://localhost:8083/week13/team/noservice.json')
+            $.get('http://localhost:8083/week13/team/servicesNew.json')
               .done(function(data){
                 NoServicesItems =data
                 analyze()
