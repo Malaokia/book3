@@ -1,6 +1,5 @@
 # Book 3
 
-
 Everything I've learned from the Big Data HCI course (Volume III).
 
 # Install
