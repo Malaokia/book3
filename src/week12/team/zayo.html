@@ -114,7 +114,7 @@ function run(id, solutionFunc, data){
     $(id).find('.answer').html(answer)
 }
 function loadDataThenRunSolutions(){
-    $.get({url: 'profile.json'})
+    $.get('profile.json')
      .done(function(data){
         //  var lines = data.trim().split('\n')
         items = data
